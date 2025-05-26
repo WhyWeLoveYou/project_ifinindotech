@@ -8,6 +8,7 @@
         <div class="col-md-8 offset-md-2">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
+
                     <form action="{{ route('orders.update', $order->id) }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -98,42 +99,57 @@
     }
 
     function setAlamat() {
-        var userSelect = document.getElementById('user_id');
-        var alamatInput = document.getElementById('alamat');
-        var alamat = '';
-        if (userSelect.value) {
-            var selectedOption = userSelect.options[userSelect.selectedIndex];
-            alamat = selectedOption.getAttribute('data-alamat') || '';
+        try {
+            var userSelect = document.getElementById('user_id');
+            var alamatInput = document.getElementById('alamat');
+            var alamat = '';
+            if (userSelect.value) {
+                var selectedOption = userSelect.options[userSelect.selectedIndex];
+                alamat = selectedOption.getAttribute('data-alamat') || '';
+            }
+            alamatInput.value = alamat;
+        } catch (e) {
+            alert('Terjadi kesalahan saat memilih user.');
+            console.error(e);
         }
-        alamatInput.value = alamat;
     }
 
     function updateRow(row) {
-        var select = row.querySelector('.produk-select');
-        var hargaInput = row.querySelector('.harga-input');
-        var jumlahInput = row.querySelector('.jumlah-input');
-        var subtotalInput = row.querySelector('.subtotal-input');
+        try {
+            var select = row.querySelector('.produk-select');
+            var hargaInput = row.querySelector('.harga-input');
+            var jumlahInput = row.querySelector('.jumlah-input');
+            var subtotalInput = row.querySelector('.subtotal-input');
 
-        var harga = 0;
-        if (select.value) {
-            var selectedOption = select.options[select.selectedIndex];
-            harga = selectedOption.getAttribute('data-harga') || 0;
+            var harga = 0;
+            if (select.value) {
+                var selectedOption = select.options[select.selectedIndex];
+                harga = selectedOption.getAttribute('data-harga') || 0;
+            }
+            hargaInput.value = harga;
+
+            var jumlah = parseInt(jumlahInput.value) || 0;
+            var subtotal = harga * jumlah;
+            subtotalInput.value = subtotal;
+        } catch (e) {
+            alert('Terjadi kesalahan saat menghitung subtotal.');
+            console.error(e);
         }
-        hargaInput.value = harga;
-
-        var jumlah = parseInt(jumlahInput.value) || 0;
-        var subtotal = harga * jumlah;
-        subtotalInput.value = subtotal;
     }
 
     function updateTotal() {
-        var subtotalInputs = document.querySelectorAll('.subtotal-input');
-        var total = 0;
-        subtotalInputs.forEach(function(input) {
-            total += parseInt(input.value) || 0;
-        });
-        document.getElementById('total_harga').value = total;
-        document.getElementById('total_rupiah').textContent = formatRupiah(total);
+        try {
+            var subtotalInputs = document.querySelectorAll('.subtotal-input');
+            var total = 0;
+            subtotalInputs.forEach(function(input) {
+                total += parseInt(input.value) || 0;
+            });
+            document.getElementById('total_harga').value = total;
+            document.getElementById('total_rupiah').textContent = formatRupiah(total);
+        } catch (e) {
+            alert('Terjadi kesalahan saat menghitung total.');
+            console.error(e);
+        }
     }
 
     function bindRowEvents(row) {
@@ -157,7 +173,6 @@
         setAlamat();
         document.getElementById('user_id').addEventListener('change', setAlamat);
 
-        // Bind events for all existing rows
         document.querySelectorAll('#produk_body tr').forEach(function(row) {
             bindRowEvents(row);
             updateRow(row);
@@ -165,19 +180,23 @@
         updateTotal();
 
         document.getElementById('add_row').addEventListener('click', function() {
-            var tbody = document.getElementById('produk_body');
-            var firstRow = tbody.querySelector('tr');
-            var newRow = firstRow.cloneNode(true);
+            try {
+                var tbody = document.getElementById('produk_body');
+                var firstRow = tbody.querySelector('tr');
+                var newRow = firstRow.cloneNode(true);
 
-            // Reset values
-            newRow.querySelector('.produk-select').selectedIndex = 0;
-            newRow.querySelector('.harga-input').value = '';
-            newRow.querySelector('.jumlah-input').value = 1;
-            newRow.querySelector('.subtotal-input').value = '';
+                newRow.querySelector('.produk-select').selectedIndex = 0;
+                newRow.querySelector('.harga-input').value = '';
+                newRow.querySelector('.jumlah-input').value = 1;
+                newRow.querySelector('.subtotal-input').value = '';
 
-            bindRowEvents(newRow);
-            tbody.appendChild(newRow);
-            updateTotal();
+                bindRowEvents(newRow);
+                tbody.appendChild(newRow);
+                updateTotal();
+            } catch (e) {
+                alert('Terjadi kesalahan saat menambah baris produk.');
+                console.error(e);
+            }
         });
     });
 </script>

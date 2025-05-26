@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Users;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -34,14 +35,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_user' => 'required',
-            'alamat' => 'required',
-        ]);
+        try {
+            $request->validate([
+                'nama_user' => 'required',
+                'alamat' => 'required',
+            ]);
 
-        Users::create($request->all());
+            Users::create($request->all());
 
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+            return redirect()->route('users.index')->with('success', 'User created successfully.');
+        } catch (\Exception $e) {
+            Log::error('User Store Error: '.$e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to create user. Please try again.');
+        }
     }
 
 
@@ -61,19 +67,24 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = Users::findOrFail($id);
+        try {
+            $user = Users::findOrFail($id);
 
-        $request->validate([
-            'nama_user' => 'required',
-            'alamat' => 'required',
-        ]);
+            $request->validate([
+                'nama_user' => 'required',
+                'alamat' => 'required',
+            ]);
 
-        $user->update([
-            'nama_user' => $request->input('nama_user'),
-            'alamat' => $request->input('alamat'),
-        ]);
+            $user->update([
+                'nama_user' => $request->input('nama_user'),
+                'alamat' => $request->input('alamat'),
+            ]);
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+            return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('User Update Error: '.$e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to update user. Please try again.');
+        }
     }
 
     /**
@@ -81,9 +92,14 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = Users::findOrFail($id);
-        $user->delete();
+        try {
+            $user = Users::findOrFail($id);
+            $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+            return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('User Delete Error: '.$e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete user. Please try again.');
+        }
     }
 }
