@@ -22,7 +22,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                                @foreach ($order->details as $i => $detail)
+                                @foreach ($orders as $order)
+                                    @foreach ($order->details as $i => $detail)
                                     <tr>
                                         @if ($i == 0)
                                             <td rowspan="{{ $order->details->count() }}">
@@ -54,6 +55,7 @@
                                             </td>
                                         @endif
                                     </tr>
+                                    @endforeach
                                 @endforeach
                         </tbody>
                     </table>
