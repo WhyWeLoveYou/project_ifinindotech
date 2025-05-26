@@ -19,7 +19,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($products as $product)
+                            @foreach ($products as $product)
                                 <tr>
                                     <td>{{ $loop->iteration + ($products->currentPage() - 1) * $products->perPage() }}</td>
                                     <td>{{ $product->nama_produk }}</td>
@@ -36,7 +36,7 @@
                                         </form>
                                     </td>
                                 </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                     {{ $products->links() }}

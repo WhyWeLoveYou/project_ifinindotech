@@ -22,7 +22,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($orders as $order)
                                 @foreach ($order->details as $i => $detail)
                                     <tr>
                                         @if ($i == 0)
@@ -56,7 +55,6 @@
                                         @endif
                                     </tr>
                                 @endforeach
-                            @endforelse
                         </tbody>
                     </table>
                     {{ $orders->links() }}

@@ -19,7 +19,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($users as $user)
+                                    @foreach ($users as $user)
                                         <tr>
                                             <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
                                             <td>{{ $user->nama_user }}</td>
@@ -36,7 +36,7 @@
                                                 </form>
                                             </td>
                                         </tr>
-                                    @endforelse
+                                    @endforeach
                                 </tbody>
                             </table>
                             {{ $users->links() }}
