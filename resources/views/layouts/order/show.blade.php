@@ -50,20 +50,12 @@
                                                         class="btn btn-sm btn-primary">Edit</a>
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                                 </form>
                                             </td>
                                         @endif
                                     </tr>
                                 @endforeach
-                            @empty
-                                <tr>
-                                    <td colspan="7">
-                                        <div class="alert alert-danger mb-0">
-                                            Data Orders belum Tersedia.
-                                        </div>
-                                    </td>
-                                </tr>
                             @endforelse
                         </tbody>
                     </table>

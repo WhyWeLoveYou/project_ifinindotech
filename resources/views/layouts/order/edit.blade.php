@@ -81,7 +81,7 @@
                             <span id="total_rupiah" class="form-text text-muted"></span>
                         </div>
 
-                        <button type="submit" class="btn btn-md btn-primary me-3">UPDATE</button>
+                        <button type="submit" class="btn btn-md btn-primary me-3">Update</button>
                     </form>
                 </div>
             </div>

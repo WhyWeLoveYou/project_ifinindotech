@@ -29,19 +29,11 @@
                                                     action="{{ route('users.destroy', $user->id_user) }}"
                                                     method="POST">
                                                     <a href="{{ route('users.edit', $user->id_user) }}"
-                                                        class="btn btn-sm btn-primary">EDIT</a>
+                                                        class="btn btn-sm btn-primary">Edit</a>
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger">HAPUS</button>
+                                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
                                                 </form>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4">
-                                                <div class="alert alert-danger mb-0">
-                                                    Data users belum Tersedia.
-                                                </div>
                                             </td>
                                         </tr>
                                     @endforelse

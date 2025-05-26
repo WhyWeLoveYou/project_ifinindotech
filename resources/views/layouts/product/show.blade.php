@@ -29,19 +29,11 @@
                                             action="{{ route('products.destroy', $product->id_produk) }}"
                                             method="POST">
                                             <a href="{{ route('products.edit', $product->id_produk) }}"
-                                                class="btn btn-sm btn-primary">EDIT</a>
+                                                class="btn btn-sm btn-primary">Edit</a>
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">HAPUS</button>
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                         </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4">
-                                        <div class="alert alert-danger mb-0">
-                                            Data Products belum Tersedia.
-                                        </div>
                                     </td>
                                 </tr>
                             @endforelse
