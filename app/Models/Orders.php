@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\OrderDetails;
+use App\Models\Users;
 
 class Orders extends Model
 {
@@ -10,20 +12,17 @@ class Orders extends Model
 
     protected $fillable = [
         'id_user',
-        'id_produk',
-        'harga',
-        'jumlah',
         'total_harga',
         'alamat',
     ];
 
-    public function user()
+    public function details()
     {
-        return $this->belongsTo(Users::class, 'id_user');
+        return $this->hasMany(OrderDetails::class, 'order_id', 'id');
     }
 
-    public function product()
+    public function user()
     {
-        return $this->belongsTo(Product::class, 'id_produk');
+        return $this->belongsTo(Users::class, 'id_user', 'id_user');
     }
 }

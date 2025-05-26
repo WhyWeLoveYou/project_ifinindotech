@@ -13,15 +13,15 @@
 
                         <div class="form-group mb-3">
                             <label class="font-weight-bold">Nama User</label>
-                            <select name="id_user" id="user_id" class="form-control @error('user_id') is-invalid @enderror">
+                            <select name="id_user" id="user_id" class="form-control @error('id_user') is-invalid @enderror">
                                 <option value="">-- Pilih User --</option>
                                 @foreach($users as $user)
-                                    <option value="{{ $user->id_user }}" data-alamat="{{ $user->alamat }}" {{ old('user_id') == $user->id_user ? 'selected' : '' }}>
+                                    <option value="{{ $user->id_user }}" data-alamat="{{ $user->alamat }}" {{ old('id_user') == $user->id_user ? 'selected' : '' }}>
                                         {{ $user->nama_user }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('user_id')
+                            @error('id_user')
                                 <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
@@ -31,38 +31,49 @@
                             <input type="text" class="form-control" id="alamat" name="alamat" readonly>
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label class="font-weight-bold">Nama Produk</label>
-                            <select name="id_produk" id="product_id" class="form-control @error('product_id') is-invalid @enderror">
-                                <option value="">-- Pilih Produk --</option>
-                                @foreach($products as $product)
-                                    <option value="{{ $product->id_produk }}" data-harga="{{ $product->harga }}" {{ old('product_id') == $product->id_produk ? 'selected' : '' }}>
-                                        {{ $product->nama_produk }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('product_id')
-                                <div class="alert alert-danger mt-2">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="font-weight-bold">Harga</label>
-                            <input type="number" class="form-control" id="harga" name="harga" readonly>
-                            <span id="harga_rupiah" class="form-text text-muted"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="font-weight-bold">Jumlah</label>
-                            <input type="number" class="form-control @error('jumlah') is-invalid @enderror" id="jumlah" name="jumlah" value="{{ old('jumlah') }}" placeholder="Masukkan Jumlah">
-                            @error('jumlah')
-                                <div class="alert alert-danger mt-2">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        <label class="font-weight-bold">Produk</label>
+                        <table class="table table-bordered" id="produk_table">
+                            <thead>
+                                <tr>
+                                    <th>Nama Produk</th>
+                                    <th>Harga</th>
+                                    <th>Jumlah</th>
+                                    <th>Subtotal</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="produk_body">
+                                <tr>
+                                    <td>
+                                        <select name="id_produk[]" class="form-control produk-select" required>
+                                            <option value="">-- Pilih Produk --</option>
+                                            @foreach($products as $product)
+                                                <option value="{{ $product->id_produk }}" data-harga="{{ $product->harga }}">
+                                                    {{ $product->nama_produk }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control harga-input" name="harga[]" readonly>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control jumlah-input" name="jumlah[]" min="1" value="1" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control subtotal-input" name="subtotal[]" readonly>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm remove-row">-</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-success btn-sm mb-3" id="add_row">+ Tambah Produk</button>
 
                         <div class="form-group mb-3">
                             <label class="font-weight-bold">Total Harga</label>
-                            <input type="number" class="form-control" id="total_harga" name="total_harga" value="{{ old('total_harga') }}" readonly>
+                            <input type="number" class="form-control" id="total_harga" name="total_harga" readonly>
                             <span id="total_rupiah" class="form-text text-muted"></span>
                         </div>
 
@@ -93,35 +104,72 @@
         alamatInput.value = alamat;
     }
 
-    function setHargaAndTotal() {
-        var productSelect = document.getElementById('product_id');
-        var hargaInput = document.getElementById('harga');
-        var jumlahInput = document.getElementById('jumlah');
-        var totalInput = document.getElementById('total_harga');
-        var hargaRupiah = document.getElementById('harga_rupiah');
-        var totalRupiah = document.getElementById('total_rupiah');
+    function updateRow(row) {
+        var select = row.querySelector('.produk-select');
+        var hargaInput = row.querySelector('.harga-input');
+        var jumlahInput = row.querySelector('.jumlah-input');
+        var subtotalInput = row.querySelector('.subtotal-input');
 
         var harga = 0;
-        if (productSelect.value) {
-            var selectedOption = productSelect.options[productSelect.selectedIndex];
+        if (select.value) {
+            var selectedOption = select.options[select.selectedIndex];
             harga = selectedOption.getAttribute('data-harga') || 0;
         }
         hargaInput.value = harga;
-        hargaRupiah.textContent = formatRupiah(harga);
 
         var jumlah = parseInt(jumlahInput.value) || 0;
-        var total = harga * jumlah;
-        totalInput.value = total;
-        totalRupiah.textContent = formatRupiah(total);
+        var subtotal = harga * jumlah;
+        subtotalInput.value = subtotal;
+    }
+
+    function updateTotal() {
+        var subtotalInputs = document.querySelectorAll('.subtotal-input');
+        var total = 0;
+        subtotalInputs.forEach(function(input) {
+            total += parseInt(input.value) || 0;
+        });
+        document.getElementById('total_harga').value = total;
+        document.getElementById('total_rupiah').textContent = formatRupiah(total);
+    }
+
+    function bindRowEvents(row) {
+        row.querySelector('.produk-select').addEventListener('change', function() {
+            updateRow(row);
+            updateTotal();
+        });
+        row.querySelector('.jumlah-input').addEventListener('input', function() {
+            updateRow(row);
+            updateTotal();
+        });
+        row.querySelector('.remove-row').addEventListener('click', function() {
+            if (document.querySelectorAll('#produk_body tr').length > 1) {
+                row.remove();
+                updateTotal();
+            }
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         setAlamat();
-        setHargaAndTotal();
-
         document.getElementById('user_id').addEventListener('change', setAlamat);
-        document.getElementById('product_id').addEventListener('change', setHargaAndTotal);
-        document.getElementById('jumlah').addEventListener('input', setHargaAndTotal);
+
+        var firstRow = document.querySelector('#produk_body tr');
+        bindRowEvents(firstRow);
+        updateRow(firstRow);
+        updateTotal();
+
+        document.getElementById('add_row').addEventListener('click', function() {
+            var tbody = document.getElementById('produk_body');
+            var newRow = firstRow.cloneNode(true);
+
+            newRow.querySelector('.produk-select').selectedIndex = 0;
+            newRow.querySelector('.harga-input').value = '';
+            newRow.querySelector('.jumlah-input').value = 1;
+            newRow.querySelector('.subtotal-input').value = '';
+
+            bindRowEvents(newRow);
+            tbody.appendChild(newRow);
+        });
     });
 </script>
 @endsection

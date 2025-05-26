@@ -9,7 +9,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('products', OrdersController::class);
+Route::resource('products', ProductController::class);
 Route::resource('users', UserController::class);
 Route::resource('orders', OrdersController::class);
-Route::get('/orders/print/pdf', [OrdersController::class, 'print_to_pdf'])->name('orders.print_pdf');
+Route::get('/orders/print/pdf/{id}', [OrdersController::class, 'print_single_pdf'])->name('orders.print_pdf');

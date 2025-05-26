@@ -8,29 +8,40 @@
     </style>
 </head>
 <body>
-    <h2>Order List</h2>
+    <h2>Order Detail</h2>
+    <table>
+        <tr>
+            <th>User</th>
+            <td>{{ $order->user->nama_user }}</td>
+        </tr>
+        <tr>
+            <th>Alamat</th>
+            <td>{{ $order->alamat }}</td>
+        </tr>
+        <tr>
+            <th>Total Harga</th>
+            <td>{{ 'Rp ' . number_format($order->total_harga, 2, ',', '.') }}</td>
+        </tr>
+    </table>
+    <br>
     <table>
         <thead>
             <tr>
                 <th>No</th>
-                <th>User</th>
-                <th>Alamat</th>
                 <th>Produk</th>
                 <th>Harga</th>
                 <th>Jumlah</th>
-                <th>Total Harga</th>
+                <th>Subtotal</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($orders as $order)
+            @foreach($order->details as $i => $detail)
             <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $order->user->nama_user }}</td>
-                <td>{{ $order->alamat }}</td>
-                <td>{{ $order->product->nama_produk }}</td>
-                <td>{{ number_format($order->product->harga, 2, ',', '.') }}</td>
-                <td>{{ $order->jumlah }}</td>
-                <td>{{ number_format($order->total_harga, 2, ',', '.') }}</td>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $detail->product->nama_produk }}</td>
+                <td>{{ 'Rp ' . number_format($detail->harga, 2, ',', '.') }}</td>
+                <td>{{ $detail->jumlah }}</td>
+                <td>{{ 'Rp ' . number_format($detail->subtotal, 2, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>

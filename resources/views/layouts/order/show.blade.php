@@ -23,27 +23,39 @@
                         </thead>
                         <tbody>
                             @forelse ($orders as $order)
-                                <tr>
-                                    <td>{{ $loop->iteration + ($orders->currentPage() - 1) * $orders->perPage() }}</td>
-                                    <td>{{ $order->user->nama_user }}</td>
-                                    <td>{{ $order->product->nama_produk }}</td>
-                                    <td>{{ 'Rp ' . number_format($order->harga, 2, ',', '.') }}</td>
-                                    <td>{{ $order->jumlah }}</td>
-                                    <td>{{ 'Rp ' . number_format($order->total_harga, 2, ',', '.') }}</td>
-                                    <td class="text-center">
-                                        <form onsubmit="return confirm('Apakah Anda Yakin ?');"
-                                            action="{{ route('orders.destroy', $order->id) }}"
-                                            method="POST">
-                                            <a href="{{ route('orders.print_pdf', $order->id) }}"
-                                                class="btn btn-sm btn-dark">Print</a>
-                                            <a href="{{ route('orders.edit', $order->id) }}"
-                                                class="btn btn-sm btn-primary">Edit</a>
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                @foreach ($order->details as $i => $detail)
+                                    <tr>
+                                        @if ($i == 0)
+                                            <td rowspan="{{ $order->details->count() }}">
+                                                {{ $loop->parent->iteration + ($orders->currentPage() - 1) * $orders->perPage() }}
+                                            </td>
+                                            <td rowspan="{{ $order->details->count() }}">
+                                                {{ $order->user->nama_user }}
+                                            </td>
+                                        @endif
+                                        <td>{{ $detail->product->nama_produk }}</td>
+                                        <td>{{ 'Rp ' . number_format($detail->harga, 2, ',', '.') }}</td>
+                                        <td>{{ $detail->jumlah }}</td>
+                                        @if ($i == 0)
+                                            <td rowspan="{{ $order->details->count() }}">
+                                                {{ 'Rp ' . number_format($order->total_harga, 2, ',', '.') }}
+                                            </td>
+                                            <td rowspan="{{ $order->details->count() }}" class="text-center">
+                                                <form onsubmit="return confirm('Apakah Anda Yakin ?');"
+                                                    action="{{ route('orders.destroy', $order->id) }}"
+                                                    method="POST">
+                                                    <a href="{{ route('orders.print_pdf', $order->id) }}"
+                                                        class="btn btn-sm btn-dark">Print</a>
+                                                    <a href="{{ route('orders.edit', $order->id) }}"
+                                                        class="btn btn-sm btn-primary">Edit</a>
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                                </form>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
                             @empty
                                 <tr>
                                     <td colspan="7">
