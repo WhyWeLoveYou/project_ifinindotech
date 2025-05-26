@@ -44,7 +44,7 @@
     <div class="d-flex">
         <nav class="sidebar d-flex flex-column p-3">
             <div class="sidebar-heading mb-4">
-                <span>My Sidebar</span>
+                <span>Test</span>
             </div>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
