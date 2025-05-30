@@ -41,7 +41,7 @@ class ProductController extends Controller
     }
 
 
-    public function edit(Product $product, string $id) : View
+    public function edit(Product $product, $id) : View
     {
         $product = Product::findOrFail($id);
         return view('layouts.product.edit', compact('product'));
